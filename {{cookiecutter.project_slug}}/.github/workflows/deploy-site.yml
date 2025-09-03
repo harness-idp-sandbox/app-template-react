@@ -1,0 +1,25 @@
+name: deploy-site
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'site/**', '.github/workflows/deploy-site.yml' ]
+permissions: { id-token: write, contents: read }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          {% raw -%}
+          role-to-assume: ${{ secrets.AWS_GHA_ROLE_ARN }}
+          {% endraw -%}
+          aws-region: {{ cookiecutter.aws_region }}
+      - name: Sync to S3
+        run: |
+          BUCKET=$(cd infra && terraform output -raw bucket_name)
+          aws s3 sync site/ "s3://$BUCKET" --delete
+      - name: Invalidate CloudFront
+        run: |
+          DIST=$(cd infra && terraform output -raw cloudfront_distribution)
+          aws cloudfront create-invalidation --distribution-id "$DIST" --paths "/*"

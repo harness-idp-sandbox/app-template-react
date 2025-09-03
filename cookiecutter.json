@@ -1,0 +1,9 @@
+{
+  "project_name": "Static Web App",
+  "project_slug": "{{ cookiecutter.project_name.replace('-', '').replace('_', '').replace(' ', '').title() }}",
+  "aws_account_id": "759984737373",
+  "aws_region": "us-east-1",
+  "github_org": "harness-idp-sandbox",
+  "github_repo": "{{ cookiecutter.project_slug }}",
+  "environment_name": "dev"
+}
