@@ -2,6 +2,7 @@ locals {
   tags = {
     Project     = var.project_slug
     Environment = var.environment
+    CreatedFor  = HarnessPOV
   }
 }
 
